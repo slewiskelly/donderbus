@@ -1,0 +1,21 @@
+name: Lint (docs)
+on:
+  push:
+    paths:
+      - docs/**/*.md
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Vet metadata
+        uses: slewiskelly/ock/.github/actions/vet@main
+        with:
+          glob: docs/**/*.md
+      - name: Markdown lint
+        uses: DavidAnson/markdownlint-cli2-action@v20
+        with:
+          config: .markdownlint.yaml
+          globs: docs/**/*.md

@@ -1,0 +1,6 @@
+MD010: # no-hard-tabs
+  code_blocks: false
+MD013: # line-length
+  code_blocks: false
+MD025: # single-title
+  front_matter_title: ""

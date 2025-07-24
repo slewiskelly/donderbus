@@ -1,0 +1,30 @@
+version: 2
+project_name: donderbus
+archives:
+  - format_overrides:
+      - goos: windows
+        formats:
+          - zip
+brews:
+  - repository:
+      owner: slewiskelly
+      name: homebrew-tap
+    directory: Formula
+    homepage: https://github.com/slewiskelly/donderbus
+    description: Donderbus assigns a PR to a random set of individuals from a GitHub team.
+    test: |
+      donderbus version
+builds:
+  - binary: donderbus
+    main: ./cmd/donderbus
+    env:
+      - CGO_ENABLED=0
+changelog:
+  filters:
+    include:
+      - "^cmd:"
+      - "^internal:"
+checksum:
+  name_template: checksums.txt
+# gomod:
+#   proxy: true

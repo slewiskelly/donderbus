@@ -1,0 +1,18 @@
+name: Lint (actions)
+on:
+  push:
+    paths:
+      - .github/**/*.yml
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Action lint
+        uses: reviewdog/action-actionlint@v1
+        with:
+          level: warning
+          fail_level: error
+          reporter: github-check
