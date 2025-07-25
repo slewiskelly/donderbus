@@ -1,0 +1,27 @@
+name: donderbus/assign
+description: |
+  Assigns a pull request to a random set of individuals from a GitHub team.
+inputs:
+  owner:
+    required: true
+  repository:
+    required: true
+  number:
+    required: true
+  version:
+    default: latest
+  github_token:
+    required: false
+runs:
+  using: composite
+  steps:
+    - name: Setup donderbus
+      uses: slewiskelly/donderbus/.github/actions/setup-donderbus@main
+      with:
+        version: ${{ inputs.version }}
+    - name: Vet
+      run: |
+        donderbus assign https://github.com/${{ inputs.owner }}/${{ inputs.repository }}/pull/${{ inputs.number }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github_token || secrets.GITHUB_TOKEN }}
+      shell: bash
