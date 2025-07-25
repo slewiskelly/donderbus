@@ -1,0 +1,18 @@
+name: setup-donderbus
+description: Installs donderbus and adds it to the PATH
+inputs:
+  version:
+    default: latest
+runs:
+  # TODO(slewiskelly): Download a pre-built version directly from a published
+  # release.
+  using: composite
+  steps:
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: stable
+    - name: Install
+      run: |
+        go install github.com/slewiskelly/donderbus/cmd/donderbus@${{ inputs.version }}
+      shell: bash
