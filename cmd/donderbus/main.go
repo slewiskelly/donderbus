@@ -9,6 +9,7 @@ import (
 	"github.com/google/subcommands"
 
 	"github.com/slewiskelly/donderbus/cmd/donderbus/internal/subcommands/assign"
+	"github.com/slewiskelly/donderbus/cmd/donderbus/internal/subcommands/serve"
 	"github.com/slewiskelly/donderbus/cmd/donderbus/internal/subcommands/version"
 )
 
@@ -20,6 +21,7 @@ func init() {
 	flag.Parse()
 
 	subcommands.Register(&assign.Assign{}, "")
+	subcommands.Register(&serve.Serve{}, "")
 	subcommands.Register(&version.Version{}, "")
 	subcommands.Register(subcommands.HelpCommand(), "")
 
