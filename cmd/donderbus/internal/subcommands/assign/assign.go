@@ -16,7 +16,9 @@ import (
 )
 
 // Assign implements the "assign" subcommand.
-type Assign struct{}
+type Assign struct {
+	dryRun bool
+}
 
 // Name returns the name of the subcommand.
 func (*Assign) Name() string {
@@ -43,7 +45,9 @@ Examples:
 }
 
 // SetFlags sets the flags specific to the subcommand.
-func (a *Assign) SetFlags(f *flag.FlagSet) {}
+func (a *Assign) SetFlags(f *flag.FlagSet) {
+	f.BoolVar(&a.dryRun, "dry-run", false, "perform a dry-run, skipping assignment of individuals")
+}
 
 // Execute executes the subcommand.
 func (a *Assign) Execute(ctx context.Context, fs *flag.FlagSet, args ...any) subcommands.ExitStatus {
@@ -68,13 +72,19 @@ func (a *Assign) execute(ctx context.Context, fs *flag.FlagSet, _ ...any) error 
 		return fmt.Errorf("parsing URL: %w", err)
 	}
 
-	if err := _assign.PullRequest(ctx, owner, repo, pr); err != nil {
+	if err := _assign.PullRequest(ctx, owner, repo, pr, a.opts()...); err != nil {
 		return fmt.Errorf("assigning pull request: %w", err)
 	}
 
 	fmt.Printf("https://github.com/%s/%s/pull/%d\n", owner, repo, pr)
 
 	return nil
+}
+
+func (a *Assign) opts() []_assign.Option {
+	return []_assign.Option{
+		_assign.DryRun(a.dryRun),
+	}
 }
 
 func fromURL(u string) (string, string, int, error) {

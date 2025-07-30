@@ -32,10 +32,13 @@ var (
 
 // PullRequest assigns the pull request for the given owner, repo, and PR number
 // to a random set of individuals from a GitHub team.
-func PullRequest(ctx context.Context, owner, repo string, pr int) error {
+func PullRequest(ctx context.Context, owner, repo string, pr int, opts ...Option) error {
 	if owner == "" || repo == "" || pr == 0 {
 		return errors.New("owner, repo, and PR number are required")
 	}
+
+	opt := &options{}
+	opt.apply(opts...)
 
 	teams, err := teamReviewers(ctx, client, owner, repo, pr)
 	if err != nil {
@@ -60,27 +63,36 @@ func PullRequest(ctx context.Context, owner, repo string, pr int) error {
 	slices.Sort(individuals)
 	individuals = slices.Compact(individuals)
 
-	if err := assignReviewers(ctx, client, owner, repo, pr, individuals); err != nil {
+	if err := assignReviewers(ctx, client, owner, repo, pr, individuals, opt.dryRun); err != nil {
 		return fmt.Errorf("assigning reviewers: %w", err)
 	}
 
 	return nil
 }
 
-func assignReviewers(ctx context.Context, client *github.Client, owner, repo string, pr int, users []string) error {
+func assignReviewers(ctx context.Context, client *github.Client, owner, repo string, pr int, users []string, dryRun bool) error {
 	slog.Debug("Assigning individuals.")
 
 	reviewers := sample(users, proportion)
 
 	slog.Debug("Individuals being assigned", "reviewers", reviewers, "sample", proportion)
 
+	if dryRun {
+		slog.Debug("Dry-run enabled, skipping assignment of individuals")
+
+		return nil
+	}
+
 	_, _, err := client.PullRequests.RequestReviewers(ctx, owner, repo, pr, github.ReviewersRequest{
 		Reviewers: reviewers,
 	})
+	if err != nil {
+		return err
+	}
 
 	slog.Debug("Individuals assigned.")
 
-	return err
+	return nil
 }
 
 func teamMembers(ctx context.Context, client *github.Client, owner, team string) ([]string, error) {
