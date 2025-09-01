@@ -18,7 +18,7 @@ jobs:
       packages: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v3
       - name: Setup Buildx
@@ -46,7 +46,7 @@ jobs:
           tags: ${{ steps.metadata.outputs.tags }}
           labels: ${{ steps.metadata.outputs.labels }}
       - name: Attest
-        uses: actions/attest-build-provenance@v2
+        uses: actions/attest-build-provenance@v3
         with:
           push-to-registry: true
           subject-digest: ${{ steps.build-and-push.outputs.digest }}
