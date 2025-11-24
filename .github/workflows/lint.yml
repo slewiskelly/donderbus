@@ -9,13 +9,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
       - name: Vet metadata
         uses: slewiskelly/ock/.github/actions/vet@main
         with:
           glob: docs/**/*.md
       - name: Markdown lint
-        uses: DavidAnson/markdownlint-cli2-action@v20
+        uses: DavidAnson/markdownlint-cli2-action@v21
         with:
           config: .markdownlint.yaml
           globs: docs/**/*.md
